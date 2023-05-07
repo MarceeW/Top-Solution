@@ -1,4 +1,5 @@
 ﻿@page
+@using TopSolution.Models;
 @model ExternalLoginModel
 @{
     ViewData["Title"] = "Register";
@@ -19,9 +20,43 @@
         <form asp-page-handler="Confirmation" asp-route-returnUrl="@Model.ReturnUrl" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
             <div class="form-floating mb-3">
-                <input asp-for="Input.Email" class="form-control" autocomplete="email" placeholder="Please enter your email."/>
-                <label asp-for="Input.Email" class="form-label"></label>
+                <input asp-for="Input.FirstName" class="form-control" autocomplete="firs-tname" aria-required="true" placeholder="John" />
+                <label asp-for="Input.FirstName"></label>
+                <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.LastName" class="form-control" autocomplete="last-name" aria-required="true" placeholder="Doe" />
+                <label asp-for="Input.LastName"></label>
+                <span asp-validation-for="Input.LastName" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.DisplayName" class="form-control" autocomplete="display-name" aria-required="true" placeholder="NewUser123" />
+                <label asp-for="Input.DisplayName"></label>
+                <span asp-validation-for="Input.DisplayName" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.Birthdate" class="form-control" autocomplete="birth-date" aria-required="true" />
+                <label asp-for="Input.Birthdate"></label>
+                <span asp-validation-for="Input.Birthdate" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.Email" class="form-control" autocomplete="email" aria-required="true" placeholder="name@example.com" />
+                <label asp-for="Input.Email">Email</label>
                 <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <input type="hidden" id="progLangInputFormatted" asp-for="Input.PreferredLanguages" class="form-control" autocomplete="new-password" aria-required="true" />
+            </div>
+            <div class="form-floating mb-3 flex-column">
+                <div>
+                    <label class="mb-2">Related Languages</label>
+                </div>
+                <div class="d-flex">
+                    @foreach (var pl in Enum.GetValues(typeof(ProgrammingLanguage)))
+                    {
+                        <button id="@(pl + "btn")" onclick="proglangButtonClick(this.id,relatedProgLangInput)" type="button" class="btn btn-outline-primary m-1" value="@pl">@ProgrammingLanguageValues.Values[(int)pl]</button>
+                    }
+                </div>
             </div>
             <button type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
         </form>
@@ -29,5 +64,6 @@
 </div>
 
 @section Scripts {
+    <script type="text/javascript" src="@Url.Content("/js/site.js")"></script>
     <partial name="_ValidationScriptsPartial" />
 }

@@ -20,3 +20,11 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.memo{
+    min-width: 40vw;
+    height: 20vh;
+}
+.btn:focus {
+    box-shadow: none;
+}

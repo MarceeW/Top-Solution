@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -12,10 +14,16 @@ namespace TopSolution.Controllers
 {
     public class TopicsController : Controller
     {
+        private readonly ILogger<HomeController> _logger;
+        private readonly UserManager<SiteUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ApplicationDbContext _context;
 
-        public TopicsController(ApplicationDbContext context)
+        public TopicsController(ILogger<HomeController> logger, UserManager<SiteUser> userManager, RoleManager<IdentityRole> roleManager, ApplicationDbContext context)
         {
+            _logger = logger;
+            _userManager = userManager;
+            _roleManager = roleManager;
             _context = context;
         }
 
@@ -46,6 +54,7 @@ namespace TopSolution.Controllers
         }
 
         // GET: Topics/Create
+        [Authorize]
         public IActionResult Create()
         {
             return View();
@@ -56,10 +65,13 @@ namespace TopSolution.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Type")] Topic topic)
+        public async Task<IActionResult> Create([Bind("Title,Description,Type")] Topic topic)
         {
             if (ModelState.IsValid)
             {
+                var user = await _userManager.GetUserAsync(User);
+                topic.Owner = user;
+
                 _context.Add(topic);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -83,9 +95,6 @@ namespace TopSolution.Controllers
             return View(topic);
         }
 
-        // POST: Topics/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("Id,Title,Type")] Topic topic)
