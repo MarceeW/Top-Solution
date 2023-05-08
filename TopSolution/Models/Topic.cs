@@ -23,14 +23,17 @@ namespace TopSolution.Models
         public string Description { get; set; }
         [Required]
         public DateTime CreateDate { get; set; }
+        [Required]
+        public string RelatedProgLanguages { get; set; }
+        public int Views { get; set; }
         public virtual ICollection<Comment> Comments { get; set; }
         public virtual SiteUser Owner { get; set; }
         public virtual string HashTags { get; set; }
-        public virtual string RelatedProgLanguages { get; set; }
         public Topic()
         {
             Id = Guid.NewGuid().ToString();
             CreateDate = DateTime.Now;
+            Views = 0;
         }
     }
 }

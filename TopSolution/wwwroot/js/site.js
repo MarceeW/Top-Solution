@@ -17,9 +17,9 @@ document.getElementById("hashtagInput").addEventListener("keydown", event => {
             let elementId = "hst" + text;
             let tagElement =
                 '<span class="me-sm-1" id="' + elementId +'">'+
-                    '<span class="badge bg-secondary"> ' +
-                        '<span class="">' + text +'</span>' +
-                        '<button type="button" class="badge btn" onclick="removeHashtag(this,\''+ text +'\',hashtagRawText)">x</button>' +
+                    '<span style="opacity: 0.5;" class="text-light rounded bg-secondary p-sm-2"> ' +
+                        '<span style="font-size: 16px;" class="ms-2 me-2">' + text +'</span>' +
+                        '<button type="button" class="pb-2 btn-close" aria-label="Close" onclick="removeHashtag(this,\''+ text +'\',hashtagRawText)"></button>' +
                     '</span > ' +
                 '</span >';
 

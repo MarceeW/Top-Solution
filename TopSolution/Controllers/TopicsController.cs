@@ -28,11 +28,17 @@ namespace TopSolution.Controllers
         }
 
         // GET: Topics
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index([FromQuery(Name = "page")] int page, [FromQuery(Name = "filters")] string? filters, [FromQuery(Name = "tags")] string? tags)
         {
-              return _context.Topics != null ? 
-                          View(await _context.Topics.ToListAsync()) :
-                          Problem("Entity set 'ApplicationDbContext.Topics'  is null.");
+            const int singlePageElementCound = 15;
+            int startPos = page == 1 ? 0 : page * singlePageElementCound;
+
+            ViewData["page"] = page == 0 ? 1 : page;
+            ViewData["filters"] = filters;
+            ViewData["tags"] = tags;
+            ViewData["topicCount"] = await _context.Topics.CountAsync();
+
+            return View(await _context.Topics.Skip(startPos).Take(singlePageElementCound).ToListAsync());
         }
 
         // GET: Topics/Details/5
@@ -64,8 +70,9 @@ namespace TopSolution.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Title,Description,Type")] Topic topic)
+        public async Task<IActionResult> Create([FromForm] Topic topic)
         {
             if (ModelState.IsValid)
             {

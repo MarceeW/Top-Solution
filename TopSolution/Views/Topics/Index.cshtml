@@ -3,39 +3,48 @@
 @{
     ViewData["Title"] = "Index";
 }
+<div class="d-flex justify-content-between mb-5">
+    <h1>Topics</h1>
 
-<h1>Index</h1>
+    <a type="button" class="btn btn-dark m-3" asp-action="Create">Create new</a>
+</div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Type)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Type)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
+@foreach (var item in Model)
+{
+    var progLangs = item.RelatedProgLanguages.Split(';').ToList();
+    progLangs.RemoveAt(progLangs.Count - 1);
+    var hashtags = item.HashTags.Split('#').ToList();
+    hashtags.RemoveAt(0);
+
+    <div class="topic mb-3 rounded-3 shadow p-2">
+        <div class="m-3">
+            <a style="text-decoration: none;" class="h5" href="/Topics/Details/@item.Id">@item.Title</a>
+        </div>
+        <div class="m-3 flex-column">
+            @foreach (var lang in progLangs)
+            {
+                <span class="bg-primary text-light rounded me-sm-1 p-1 pe-2 ps-2">
+                    @(ProgrammingLanguageValues.Values[(int)Enum.Parse<ProgrammingLanguage>(lang)])
+                </span>
+            }
+        </div>
+        <div class="m-3 flex-column">
+            @foreach (var tag in hashtags)
+            {
+                <span class="bg-secondary bg-opacity-10 rounded me-sm-1 p-1 pe-2 ps-2">
+                    @("#" + tag)
+                </span>
+            }
+        </div>
+    </div>
 }
-    </tbody>
-</table>
+
+<div class="pagetabcontainer d-flex justify-content-center">
+    <nav class="nav nav-pills nav-justified">
+        <a class="nav-link@((int)ViewData["page"]! == 1 ? " active" : "")" href="/Topics?page=1">1</a>
+        <a class="nav-link@((int)ViewData["page"]! == 2 ? " active" : "")" href="/Topics?page=2">2</a>
+        <a class="nav-link@((int)ViewData["page"]! == 3 ? " active" : "")" href="/Topics?page=3">3</a>
+        <a class="nav-link@((int)ViewData["page"]! == 4 ? " active" : "")" href="/Topics?page=4">4</a>
+        <a class="nav-link@((int)ViewData["page"]! == 5 ? " active" : "")" href="/Topics?page=5">5</a>
+    </nav>
+</div>

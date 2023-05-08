@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TopSolution.Data;
 
@@ -11,9 +12,11 @@ using TopSolution.Data;
 namespace TopSolution.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230507210918_topic_reqproglang")]
+    partial class topic_reqproglang
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -290,9 +293,6 @@ namespace TopSolution.Data.Migrations
                         .HasColumnType("nvarchar(255)");
 
                     b.Property<int>("Type")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Views")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
