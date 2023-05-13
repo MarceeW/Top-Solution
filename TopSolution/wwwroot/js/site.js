@@ -1,36 +1,47 @@
 ﻿var hashtagInput = document.getElementById("hashtagInput");
 var hashtagRawText = document.getElementById("hashtagRawText");
 
-document.getElementById("hashtagInput").addEventListener("keydown", event => {
-    if (event.code === "Space") {
-        if (hashtagInput.value.length > 0 && hashtagInput.value != ' ' && !hashtagRawText.value.includes(hashtagInput.value)) {
-            let text = '';
+if (hashtagInput != null) {
+    hashtagInput.addEventListener("keydown", event => {
+        if (event.code === "Space") {
+            if (hashtagInput.value.length > 0 && hashtagInput.value != ' ' && !hashtagRawText.value.includes(hashtagInput.value)) {
+                let text = '';
 
-            if (hashtagInput.value.includes("#"))
-                text += hashtagInput.value;
-            else
-                text += '#' + hashtagInput.value;
+                if (hashtagInput.value.includes("#"))
+                    text += hashtagInput.value;
+                else
+                    text += '#' + hashtagInput.value;
 
-            hashtagRawText.value += text;
+                hashtagRawText.value += text;
 
-            let hashtagContainer = document.getElementById("hashtagContainer");
-            let elementId = "hst" + text;
-            let tagElement =
-                '<span class="me-sm-1" id="' + elementId +'">'+
+                let hashtagContainer = document.getElementById("hashtagContainer");
+                let elementId = "hst" + text;
+                let tagElement =
+                    '<span class="me-sm-1" id="' + elementId + '">' +
                     '<span style="opacity: 0.5;" class="text-light rounded bg-secondary p-sm-2"> ' +
-                        '<span style="font-size: 16px;" class="ms-2 me-2">' + text +'</span>' +
-                        '<button type="button" class="pb-2 btn-close" aria-label="Close" onclick="removeHashtag(this,\''+ text +'\',hashtagRawText)"></button>' +
+                    '<span style="font-size: 16px;" class="ms-2 me-2">' + text + '</span>' +
+                    '<button type="button" class="pb-2 btn-close" aria-label="Close" onclick="removeHashtag(this,\'' + text + '\',hashtagRawText)"></button>' +
                     '</span > ' +
-                '</span >';
+                    '</span >';
 
-            hashtagContainer.innerHTML += tagElement;
+                hashtagContainer.innerHTML += tagElement;
+            }
         }
-    }
-});
-document.getElementById("hashtagInput").addEventListener("keyup", event => {
-    if (event.code === "Space")
-        hashtagInput.value = '';
-});
+    });
+    hashtagInput.addEventListener("keyup", event => {
+        if (event.code === "Space")
+            hashtagInput.value = '';
+    });
+}
+
+var profUploader = document.getElementById("profilePictureUpload");
+
+if (profUploader != null) {
+    profUploader.addEventListener("change", e => {
+        document.getElementById("profUploadFormSubmit").click();
+    });
+}
+
 function removeHashtag(btn,textToRemove,inputIdToRemove) {
     let input = document.getElementById(inputIdToRemove.id);
     let toDelete = btn.parentNode.parentNode;

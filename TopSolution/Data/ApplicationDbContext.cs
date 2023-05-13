@@ -22,6 +22,10 @@ namespace TopSolution.Data
                 .WithOne(t => t.Owner)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            builder.Entity<SiteUser>()
+                .HasMany<SiteUser>(u => u.Friends)
+                .WithMany();
+
             builder.Entity<Topic>()
                 .HasMany<Comment>(c => c.Comments)
                 .WithOne(c => c.Topic)
@@ -29,6 +33,16 @@ namespace TopSolution.Data
 
             builder.Entity<Comment>()
                 .HasOne<SiteUser>(u => u.Owner);
+
+            //var topics = Enumerable.Range(0, 130).Select(i => new Topic()
+            //{
+            //    Title = $"Title {i}",
+            //    Description = $"Desc {i}",
+            //    RelatedProgLanguages = $"{ProgrammingLanguage.Cpp}",
+            //    Type = TopicType.Question,
+            //}).ToArray();
+
+            //builder.Entity<Topic>().HasData(topics);
 
             base.OnModelCreating(builder);
         }

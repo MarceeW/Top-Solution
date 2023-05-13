@@ -28,17 +28,22 @@ namespace TopSolution.Controllers
         }
 
         // GET: Topics
-        public async Task<IActionResult> Index([FromQuery(Name = "page")] int page, [FromQuery(Name = "filters")] string? filters, [FromQuery(Name = "tags")] string? tags)
+        public async Task<IActionResult> Index([FromQuery(Name = "page")] int page, [FromQuery(Name = "filters")] string filters, [FromQuery(Name = "tags")] string tags, [FromQuery(Name = "proglang")] string proglang)
         {
-            const int singlePageElementCound = 15;
-            int startPos = page == 1 ? 0 : page * singlePageElementCound;
+            const int singlePageElementCount = 15;
+            int startPos = page == 1 ? 0 : page * singlePageElementCount;
+
+            var list = _context.Topics
+                .Where(t => t.RelatedProgLanguages.Contains(proglang == null ? "" : proglang));
 
             ViewData["page"] = page == 0 ? 1 : page;
             ViewData["filters"] = filters;
+            ViewData["proglang"] = proglang;
             ViewData["tags"] = tags;
-            ViewData["topicCount"] = await _context.Topics.CountAsync();
+            ViewData["topicPerPage"] = singlePageElementCount;
+            ViewData["topicCount"] = await list.CountAsync();
 
-            return View(await _context.Topics.Skip(startPos).Take(singlePageElementCound).ToListAsync());
+            return View(await list.Skip(startPos).Take(singlePageElementCount).ToListAsync());
         }
 
         // GET: Topics/Details/5
@@ -78,6 +83,7 @@ namespace TopSolution.Controllers
             {
                 var user = await _userManager.GetUserAsync(User);
                 topic.Owner = user;
+                user!.OnPostingTopic();
 
                 _context.Add(topic);
                 await _context.SaveChangesAsync();

@@ -1,0 +1,1 @@
+﻿repository osztályok kiszervezése

@@ -8,43 +8,51 @@
 
     <a type="button" class="btn btn-dark m-3" asp-action="Create">Create new</a>
 </div>
+<div class="pb-3">
+    @foreach (var item in Model)
+    {
+        var progLangs = item.RelatedProgLanguages.Split(';').ToList();
+        progLangs.RemoveAt(progLangs.Count - 1);
+        var hashtags = item.HashTags?.Split('#').ToList();
+        hashtags?.RemoveAt(0);
 
-@foreach (var item in Model)
-{
-    var progLangs = item.RelatedProgLanguages.Split(';').ToList();
-    progLangs.RemoveAt(progLangs.Count - 1);
-    var hashtags = item.HashTags.Split('#').ToList();
-    hashtags.RemoveAt(0);
-
-    <div class="topic mb-3 rounded-3 shadow p-2">
-        <div class="m-3">
-            <a style="text-decoration: none;" class="h5" href="/Topics/Details/@item.Id">@item.Title</a>
+        <div class="topic mb-3 rounded-3 shadow p-2">
+            <div class="m-3">
+                <a style="text-decoration: none;" class="h5" href="/Topics/Details/@item.Id">@item.Title</a>
+            </div>
+            <div class="m-3 flex-column">
+                @foreach (var lang in progLangs)
+                {
+                    <a type="button" class="btn btn-primary me-sm-1 p-1 pe-2 ps-2" href="/Topics?page=@ViewData["page"]&filters=@ViewData["filters"]&tags=@ViewData["tags"]&proglang=@lang">
+                        @(ProgrammingLanguageValues.Values[(int)Enum.Parse<ProgrammingLanguage>(lang)])
+                    </a>
+                }
+            </div>
+            <div class="m-3 flex-column">
+                @if (hashtags != null)
+                    foreach (var tag in hashtags)
+                    {
+                        <span class="bg-secondary bg-opacity-10 rounded me-sm-1 p-1 pe-2 ps-2">
+                            @("#" + tag)
+                        </span>
+                    }
+            </div>
         </div>
-        <div class="m-3 flex-column">
-            @foreach (var lang in progLangs)
+    }
+</div>
+
+<div class="pagetabcontainer d-flex justify-content-center mt-2">
+    @if ((int)ViewData["topicCount"]! > (int)ViewData["topicPerPage"]!)
+    {
+        int currPage = (int)ViewData["page"]!;
+        int pages = (int)ViewData["topicCount"]! / (int)ViewData["topicPerPage"]!;
+        int start = currPage == 1 ? 1 : currPage - 1;
+        int end = pages > 5 && start + 4 < pages ? start + 4 : pages;
+        <nav class="nav nav-pills nav-justified">
+            @for (int i = start; i < end; i++)
             {
-                <span class="bg-primary text-light rounded me-sm-1 p-1 pe-2 ps-2">
-                    @(ProgrammingLanguageValues.Values[(int)Enum.Parse<ProgrammingLanguage>(lang)])
-                </span>
+                <a class="nav-link@(currPage == i ? " active disabled" : "")" href="/Topics?page=@i&filters=@ViewData["filters"]&tags=@ViewData["tags"]&proglang=@ViewData["proglang"]">@i</a>
             }
-        </div>
-        <div class="m-3 flex-column">
-            @foreach (var tag in hashtags)
-            {
-                <span class="bg-secondary bg-opacity-10 rounded me-sm-1 p-1 pe-2 ps-2">
-                    @("#" + tag)
-                </span>
-            }
-        </div>
-    </div>
-}
-
-<div class="pagetabcontainer d-flex justify-content-center">
-    <nav class="nav nav-pills nav-justified">
-        <a class="nav-link@((int)ViewData["page"]! == 1 ? " active" : "")" href="/Topics?page=1">1</a>
-        <a class="nav-link@((int)ViewData["page"]! == 2 ? " active" : "")" href="/Topics?page=2">2</a>
-        <a class="nav-link@((int)ViewData["page"]! == 3 ? " active" : "")" href="/Topics?page=3">3</a>
-        <a class="nav-link@((int)ViewData["page"]! == 4 ? " active" : "")" href="/Topics?page=4">4</a>
-        <a class="nav-link@((int)ViewData["page"]! == 5 ? " active" : "")" href="/Topics?page=5">5</a>
-    </nav>
+        </nav>
+    }
 </div>

@@ -23,13 +23,20 @@ namespace TopSolution.Models
         public DateTime Birthday { get; set; }
         public int CommunityPoints { get; set; }
         public virtual ICollection<Topic> Topics { get; set; }
+        public virtual ICollection<SiteUser> Friends { get; set; }
         public virtual byte[] ProfilePicture { get; set; }
         public virtual string PreferredLanguages { get; set; }
         [NotMapped]
         public string FullName { get => FirstName + " " + LastName; }
+        [NotMapped]
+        public string ProfilePictureBase64String => "data:image/jpg;base64," + Convert.ToBase64String(ProfilePicture);
         public SiteUser()
         {
             Id = Guid.NewGuid().ToString();
+        }
+        public void OnPostingTopic()
+        {
+            CommunityPoints += 10;
         }
     }
 }
