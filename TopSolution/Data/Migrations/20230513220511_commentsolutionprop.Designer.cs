@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TopSolution.Data;
 
@@ -11,9 +12,11 @@ using TopSolution.Data;
 namespace TopSolution.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230513220511_commentsolutionprop")]
+    partial class commentsolutionprop
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -237,13 +240,13 @@ namespace TopSolution.Data.Migrations
 
             modelBuilder.Entity("SiteUserSiteUser", b =>
                 {
-                    b.Property<string>("FollowedUsersId")
+                    b.Property<string>("FriendsId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("SiteUserId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("FollowedUsersId", "SiteUserId");
+                    b.HasKey("FriendsId", "SiteUserId");
 
                     b.HasIndex("SiteUserId");
 
@@ -343,9 +346,6 @@ namespace TopSolution.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Followers")
-                        .HasColumnType("int");
-
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -414,7 +414,7 @@ namespace TopSolution.Data.Migrations
                 {
                     b.HasOne("TopSolution.Models.SiteUser", null)
                         .WithMany()
-                        .HasForeignKey("FollowedUsersId")
+                        .HasForeignKey("FriendsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

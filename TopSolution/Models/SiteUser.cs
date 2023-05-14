@@ -22,8 +22,10 @@ namespace TopSolution.Models
         [Required]
         public DateTime Birthday { get; set; }
         public int CommunityPoints { get; set; }
+        public int Followers { get; set; }
         public virtual ICollection<Topic> Topics { get; set; }
-        public virtual ICollection<SiteUser> Friends { get; set; }
+        public virtual ICollection<SiteUser> FollowedUsers { get; set; }
+        public virtual ICollection<Comment> Comments { get; set; }
         public virtual byte[] ProfilePicture { get; set; }
         public virtual string PreferredLanguages { get; set; }
         [NotMapped]

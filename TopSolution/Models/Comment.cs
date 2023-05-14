@@ -11,6 +11,7 @@ namespace TopSolution.Models
         public string Content { get; set; }
         [Required]
         public DateTime CreatedAt { get; set; }
+        public bool IsSolution { get; set; }
         public virtual SiteUser Owner { get; set; }
         public virtual Topic Topic { get; set; }
         public Comment()

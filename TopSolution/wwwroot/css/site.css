@@ -74,10 +74,56 @@ footer{
     width: 30vw;
 }
 .profilepicturecontainer{
-    width: fit-content;
-    height: fit-content;
-    padding: 2px;
+    position: relative;
 }
-input[type="file"] {
+.profilepictureelement{
+    position: absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+}
+.changeprofilepicturecover {
+    opacity:0;
+    transition: 0.3s;
+}
+.changeprofilepicturecover:hover {
+    opacity: 0.5;
+}
+.input[type="file"] {
     display: none;
+}
+.tabbtncontainer {
+    overflow: hidden;
+}
+.tabbtncontainer .tabbtn {
+    background-color: #e6efff;
+    color: black;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 6px 16px;
+    margin-right: 5px;
+    transition: 0.3s;
+    border-radius: 32px;
+}
+
+.tabbtncontainer .tabbtn:hover {
+    filter: brightness(110%);
+    color: inherit;
+}
+
+.tabbtncontainer .tabbtn.active {
+    background-color: #3B71CA;
+    color: white;
+}
+
+.tabcontent {
+    display: none;
+    padding: 24px 12px;
+}
+
+.tabbtn {
+    text-decoration: none;
 }

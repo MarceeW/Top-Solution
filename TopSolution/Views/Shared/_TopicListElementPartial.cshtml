@@ -1,0 +1,31 @@
+﻿@model Topic
+
+@{
+    var progLangs = Model.RelatedProgLanguages.Split(';').ToList();
+    progLangs.RemoveAt(progLangs.Count - 1);
+    var hashtags = Model.HashTags?.Split('#').ToList();
+    hashtags?.RemoveAt(0);
+    }
+
+<div class="topic mb-3 rounded-3 shadow p-2">
+    <div class="m-3">
+        <a style="text-decoration: none;" class="h5" href="/Topics/Details/@Model.Id">@Model.Title</a>
+    </div>
+    <div class="m-3 flex-column">
+        @foreach (var lang in progLangs)
+        {
+            <a type="button" class="btn btn-primary me-sm-1 p-1 pe-2 ps-2" href="/Topics?page=@ViewData["page"]&filters=@ViewData["filters"]&tags=@ViewData["tags"]&proglang=@lang">
+                @(ProgrammingLanguageValues.Values[(int)Enum.Parse<ProgrammingLanguage>(lang)])
+            </a>
+        }
+    </div>
+    <div class="m-3 flex-column">
+        @if (hashtags != null)
+            foreach (var tag in hashtags)
+            {
+                <span class="bg-secondary bg-opacity-10 rounded me-sm-1 p-1 pe-2 ps-2">
+                    @("#" + tag)
+                </span>
+            }
+    </div>
+</div>

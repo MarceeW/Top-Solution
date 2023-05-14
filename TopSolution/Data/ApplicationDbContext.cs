@@ -23,16 +23,18 @@ namespace TopSolution.Data
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<SiteUser>()
-                .HasMany<SiteUser>(u => u.Friends)
+                .HasMany<SiteUser>(u => u.FollowedUsers)
                 .WithMany();
+
+            builder.Entity<SiteUser>()
+                .HasMany<Comment>(c => c.Comments)
+                .WithOne()
+                .OnDelete(DeleteBehavior.ClientSetNull);
 
             builder.Entity<Topic>()
                 .HasMany<Comment>(c => c.Comments)
                 .WithOne(c => c.Topic)
                 .OnDelete(DeleteBehavior.Cascade);
-
-            builder.Entity<Comment>()
-                .HasOne<SiteUser>(u => u.Owner);
 
             //var topics = Enumerable.Range(0, 130).Select(i => new Topic()
             //{

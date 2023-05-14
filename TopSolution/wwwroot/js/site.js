@@ -1,5 +1,15 @@
 ﻿var hashtagInput = document.getElementById("hashtagInput");
 var hashtagRawText = document.getElementById("hashtagRawText");
+var searchquery = document.getElementById("searchquery");
+
+searchquery.addEventListener("focusin", event => {
+    let searchqueryhelper = document.getElementById("searchqueryhelper");
+    searchqueryhelper.style.opacity = 100;
+});
+searchquery.addEventListener("focusout", event => {
+    let searchqueryhelper = document.getElementById("searchqueryhelper");
+    searchqueryhelper.style.opacity = 0;
+});
 
 if (hashtagInput != null) {
     hashtagInput.addEventListener("keydown", event => {

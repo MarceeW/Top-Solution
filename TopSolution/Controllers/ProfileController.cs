@@ -21,13 +21,15 @@ namespace TopSolution.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index(string guid)
+        public async Task<IActionResult> Index(string id)
         {
             var user = await _userManager.GetUserAsync(User);
-            ViewData["isOwnPage"] = user!.Id == guid || guid == null;
+            if (user != null)
+                ViewData["isOwnProfile"] = user!.Id == id || id == null;
+            else ViewData["isOwnProfile"] = false;
 
-            if(guid != null)
-                return View(await _userManager.FindByIdAsync(guid));
+            if (id != null)
+                return View(await _userManager.FindByIdAsync(id));
             else return View(user);
         }
         [Authorize]

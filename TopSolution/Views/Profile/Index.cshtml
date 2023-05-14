@@ -1,26 +1,144 @@
 ﻿@model SiteUser
 
-<div class="d-flex justify-content-around">
-    <form asp-action="UploadProfilePicture" enctype="multipart/form-data"> 
-        <div class="profilepicturecontainer border border-2 rounded-2 mb-2">
-            @if (Model.ProfilePicture == null)
+<div class="d-flex mb-5" style="height: 128px;">
+        <form asp-action="UploadProfilePicture" enctype="multipart/form-data">
+            <div class="profilepicturecontainer">
+                <div class="profilepictureelement">
+                    @if (Model.ProfilePicture == null)
+                    {
+                        <svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16" style="padding: 5px;">
+                            <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
+                        </svg>
+                    }
+                    else
+                    {
+                        <img width="128" height="128" src="@Model.ProfilePictureBase64String" style="border-radius: 50%;" />
+                    }
+                </div>
+            @if ((bool)ViewData["isOwnProfile"]!)
             {
-                <svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
-                    <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
-                </svg>
-            }
-            else
-            {
-                <img width="128" height="128" src="@Model.ProfilePictureBase64String" />
-            }
+                <div class="profilepictureelement changeprofilepicturecover bg-black rounded-circle" style="width:128px;height:128px;">
+                    <label style="position:relative;left:calc(50% - 24px);top:calc(50% - 24px);cursor:pointer;">
+                        <input type="file" accept=".png,.jpg" id="profilePictureUpload" name="profilePicture" style="display:none;" />
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="white" class="bi bi-arrow-up-circle-fill" viewBox="0 0 16 16">
+                            <path d="M16 8A8 8 0 1 0 0 8a8 8 0 0 0 16 0zm-7.5 3.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707V11.5z" />
+                        </svg>
+                    </label>
+                </div>
+            }  
+            </div>
+            <button class="btn btn-secondary" id="profUploadFormSubmit" type="submit" style="display: none;">Save</button>
+        </form>
+    <div class="flex-fill" style="margin-left: 128px;">
+        <div class="ms-5">
+            <div class="d-flex justify-content-center pb-3">
+                <h3>@Model.DisplayName</h3>
+                <label class="p-2 opacity-50">
+                    //@Model.FullName
+                </label>
+            </div>
+            <div class="border-top border-1 d-flex gap-5 opacity-50">
+                <label>
+                    <svg aria-hidden="true" width="18" height="18" viewBox="0 0 18 18">
+                        <path d="M9 4.5a1.5 1.5 0 0 0 1.28-2.27L9 0 7.72 2.23c-.14.22-.22.48-.22.77 0 .83.68 1.5 1.5 1.5Zm3.45 7.5-.8-.81-.81.8c-.98.98-2.69.98-3.67 0l-.8-.8-.82.8c-.49.49-1.14.76-1.83.76-.55 0-1.3-.17-1.72-.46V15c0 1.1.9 2 2 2h10a2 2 0 0 0 2-2v-2.7c-.42.28-1.17.45-1.72.45-.69 0-1.34-.27-1.83-.76Zm1.3-5H10V5H8v2H4.25C3 7 2 8 2 9.25v.9c0 .81.91 1.47 1.72 1.47.39 0 .77-.14 1.03-.42l1.61-1.6 1.6 1.6a1.5 1.5 0 0 0 2.08 0l1.6-1.6 1.6 1.6c.28.28.64.43 1.03.43.81 0 1.73-.67 1.73-1.48v-.9C16 8.01 15 7 13.75 7Z"></path>
+                    </svg>
+                    @Model.Birthday.Date.ToShortDateString()
+                </label>
+                <label>
+                    @Model.CommunityPoints
+                    Community points
+                </label>
+            </div>
         </div>
-        <label class="btn btn-primary">
-            Change Picture
-            <input type="file" accept=".png,.jpg" id="profilePictureUpload" name="profilePicture" />
-        </label>
-        <button class="btn btn-secondary" id="profUploadFormSubmit" type="submit" style="display: none;">Save</button>
-    </form>
-    <div>
-        <h1>@Model.DisplayName</h1>
     </div>
 </div>
+<div>
+    <div class="tabbtncontainer">
+        <button type="button" onclick="openTab(event,'profile')" class="tabbtn active">Profile</button>
+        <button type="button" onclick="openTab(event,'followedusers')" class="tabbtn">Followed users</button>
+        @if ((bool)ViewData["isOwnProfile"]!)
+        {
+            <button type="button" onclick="openTab(event,'savedtopics')" class="tabbtn">Saved topics</button>
+            <a type="button" class="tabbtn" asp-area="Identity" asp-page="/Account/Manage/Index">Account settings</a>
+        }
+    </div>
+    <div id="profile" class="tabcontent" style="display: block;">
+        <div class="pb-5">
+            <div class="pb-2" style="font-size: 24px">
+                Stats
+            </div>
+            <div class="d-flex flex-row border border-1 rounded-2 p-2 justify-content-around">
+                <div class="d-flex flex-column">
+                    <span class="d-flex justify-content-center fw-bold" style="font-size: 24px">@Model.Followers</span>
+                    <span style="font-size: 16px">Followers</span>
+                </div>
+                <div class="d-flex flex-column">
+                    <span class="d-flex justify-content-center fw-bold" style="font-size: 24px">@Model.Comments.Count</span>
+                    <span style="font-size: 16px">Comments</span>
+                </div>
+                <div class="d-flex flex-column">
+                    <span class="d-flex justify-content-center fw-bold" style="font-size: 24px">@Model.Comments.Count(c => c.IsSolution)</span>
+                    <span style="font-size: 16px;">Solved problems</span>
+                </div>
+                <div class="d-flex flex-column">
+                    <span class="d-flex justify-content-center fw-bold" style="font-size: 24px">@Model.Topics.Count</span>
+                    <span style="font-size: 16px">Topics</span>
+                </div>
+            </div>
+        </div>
+        <div class="pb-5">
+            @{
+                var progLangs = Model.PreferredLanguages.Split(';').ToList();
+                progLangs.RemoveAt(progLangs.Count - 1);
+            }
+            <div class="pb-2" style="font-size: 24px">
+                Interests
+            </div>
+            <div class="d-flex flex-wrap border border-1 rounded-2 p-3 gap-2">
+                @foreach(var lang in progLangs)
+                {
+                    <a type="button" class="btn btn-primary me-sm-1 p-1 pe-2 ps-2" href="/Topics?proglang=@lang">
+                        @(ProgrammingLanguageValues.Values[(int)Enum.Parse<ProgrammingLanguage>(lang)])
+                    </a>
+                }
+            </div>
+        </div>
+        <div>
+            <div class="pb-2" style="font-size: 24px">
+                Topics
+            </div>
+            <div>
+                @{
+                    foreach (var item in Model.Topics)
+                    {
+                        progLangs = item.RelatedProgLanguages.Split(';').ToList();
+                        progLangs.RemoveAt(progLangs.Count - 1);
+                        var hashtags = item.HashTags?.Split('#').ToList();
+                        hashtags?.RemoveAt(0);
+
+                        @(await Html.PartialAsync("_TopicListElementPartial",item))
+                    }
+                }
+            </div>
+        </div>
+    </div>
+    <div id="followedusers" class="tabcontent">
+        @if(Model.FollowedUsers.Count == 0)
+        {
+            <label style="font-size: 24px">
+                @Model.DisplayName has no followed users
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-emoji-frown-fill" viewBox="0 0 16 16">
+                    <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zM7 6.5C7 7.328 6.552 8 6 8s-1-.672-1-1.5S5.448 5 6 5s1 .672 1 1.5zm-2.715 5.933a.5.5 0 0 1-.183-.683A4.498 4.498 0 0 1 8 9.5a4.5 4.5 0 0 1 3.898 2.25.5.5 0 0 1-.866.5A3.498 3.498 0 0 0 8 10.5a3.498 3.498 0 0 0-3.032 1.75.5.5 0 0 1-.683.183zM10 8c-.552 0-1-.672-1-1.5S9.448 5 10 5s1 .672 1 1.5S10.552 8 10 8z" />
+                </svg>
+            </label> 
+        }
+    </div>
+    @if ((bool)ViewData["isOwnProfile"]!)
+    {
+        <div id="savedtopics" class="tabcontent">
+            <p>asd3</p>
+        </div>
+    }
+</div>
+
+<script src="~/js/prof.js"></script>
