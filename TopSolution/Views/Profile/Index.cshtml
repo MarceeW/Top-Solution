@@ -88,19 +88,20 @@
         </div>
         <div class="pb-5">
             @{
-                var progLangs = Model.PreferredLanguages.Split(';').ToList();
-                progLangs.RemoveAt(progLangs.Count - 1);
+                var progLangs = Model.PreferredLanguages?.Split(';').ToList();
+                progLangs?.RemoveAt(progLangs.Count - 1);
             }
             <div class="pb-2" style="font-size: 24px">
                 Interests
             </div>
             <div class="d-flex flex-wrap border border-1 rounded-2 p-3 gap-2">
-                @foreach(var lang in progLangs)
-                {
-                    <a type="button" class="btn btn-primary me-sm-1 p-1 pe-2 ps-2" href="/Topics?proglang=@lang">
-                        @(ProgrammingLanguageValues.Values[(int)Enum.Parse<ProgrammingLanguage>(lang)])
-                    </a>
-                }
+                @if(progLangs != null)
+                    foreach(var lang in progLangs)
+                    {
+                        <a type="button" class="btn btn-primary me-sm-1 p-1 pe-2 ps-2" href="/Topics?proglang=@lang">
+                            @(ProgrammingLanguageValues.Values[(int)Enum.Parse<ProgrammingLanguage>(lang)])
+                        </a>
+                    }
             </div>
         </div>
         <div>
@@ -141,4 +142,4 @@
     }
 </div>
 
-<script src="~/js/prof.js"></script>
+<script src="~/js/profile.js"></script>

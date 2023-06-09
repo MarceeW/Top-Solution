@@ -30,7 +30,16 @@
                             </svg>
                         </a>
                     </div>
-                    <div id="searchqueryhelper" class="bg-white shadow-inside shadow" style="position: absolute;height: 100px; width: 35%;left: 35%;top: 90%;border-radius: 20px;opacity:0;">
+                    <div id="searchqueryhelper" class="bg-white shadow-inside shadow searchqueryhelper">
+                        <ul id="autocompletelist" class="list-group" style="width: 100%;">
+                        </ul>
+                        <div style="font-size: 12px;"><b>Search options:</b></div>
+                        <div class="d-flex flex-column ps-2" style="width: 50%;font-size: 12px;">
+                            <span>Press <b>TAB</b> to complete search</span>
+                            <span><b>title or normal:</b> in titles</span>
+                            <span><b>hashtag:</b> in hashtags</span>
+                            <span><b>proglang:</b> in programming languages</span>
+                        </div>
                     </div>
                     <partial name="_LoginPartial" />
                 </div>

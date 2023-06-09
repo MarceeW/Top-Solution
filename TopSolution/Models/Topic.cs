@@ -1,5 +1,6 @@
 ﻿#nullable disable
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace TopSolution.Models
 {
@@ -26,7 +27,9 @@ namespace TopSolution.Models
         [Required]
         public string RelatedProgLanguages { get; set; }
         public int Views { get; set; }
+        [JsonIgnore]
         public virtual ICollection<Comment> Comments { get; set; }
+        [JsonIgnore]
         public virtual SiteUser Owner { get; set; }
         public virtual string HashTags { get; set; }
         public Topic()
