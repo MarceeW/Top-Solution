@@ -135,12 +135,11 @@ footer{
     left: 35%;
     top: 90%;
     border-radius: 20px;
-    opacity: 0;
-    display: flex;
+    display: none;
     flex-direction: column;
     justify-content: center;
     align-items: center;
 }
-.searchquery-item{
+.searchquery-item {
     cursor: pointer;
 }

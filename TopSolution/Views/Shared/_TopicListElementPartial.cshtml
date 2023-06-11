@@ -1,8 +1,10 @@
 ﻿@model Topic
 
 @{
-    var progLangs = Model.RelatedProgLanguages.Split(';').ToList();
-    progLangs.RemoveAt(progLangs.Count - 1);
+    var progLangsRaw = Model.RelatedProgLanguages.Split(';').ToList();
+    progLangsRaw.RemoveAt(progLangsRaw.Count - 1);
+    var progLangs = progLangsRaw.Select(p => ProgrammingLanguageValues.Values[(int)Enum.Parse<ProgrammingLanguage>(p)]);
+
     var hashtags = Model.HashTags?.Split('#').ToList();
     hashtags?.RemoveAt(0);
     }
@@ -14,8 +16,8 @@
     <div class="m-3 flex-column">
         @foreach (var lang in progLangs)
         {
-            <a type="button" class="btn btn-primary me-sm-1 p-1 pe-2 ps-2" href="/Topics?page=@ViewData["page"]&filters=@ViewData["filters"]&tags=@ViewData["tags"]&proglang=@lang">
-                @(ProgrammingLanguageValues.Values[(int)Enum.Parse<ProgrammingLanguage>(lang)])
+            <a type="button" class="btn btn-primary me-sm-1 p-1 pe-2 ps-2" href="/Topics?query=proglang:@lang">
+                @(lang)
             </a>
         }
     </div>
@@ -23,9 +25,9 @@
         @if (hashtags != null)
             foreach (var tag in hashtags)
             {
-                <span class="bg-secondary bg-opacity-10 rounded me-sm-1 p-1 pe-2 ps-2">
+                <a class="btn btn-secondary bg-secondary me-sm-1 p-1 pe-2 ps-2" href="/Topics?query=hashtag:@tag">
                     @("#" + tag)
-                </span>
+                </a>
             }
     </div>
 </div>

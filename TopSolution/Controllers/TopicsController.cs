@@ -28,18 +28,35 @@ namespace TopSolution.Controllers
         }
 
         // GET: Topics
-        public async Task<IActionResult> Index([FromQuery(Name = "page")] int page, [FromQuery(Name = "filters")] string filters, [FromQuery(Name = "tags")] string tags, [FromQuery(Name = "proglang")] string proglang)
+        public async Task<IActionResult> Index([FromQuery(Name = "query")] string query, [FromQuery(Name = "page")] int page)
         {
             const int singlePageElementCount = 15;
             int startPos = page == 1 ? 0 : page * singlePageElementCount;
 
-            var list = _context.Topics
-                .Where(t => t.RelatedProgLanguages.Contains(proglang == null ? "" : proglang));
+            IQueryable<Topic>? list;
 
+            if(query  == null)
+                list = _context.Topics;
+            else
+            {
+                var q = query.Split(':');
+                if (q[0] == "proglang")
+                {
+                    var n = Enum.GetName(typeof(ProgrammingLanguage), (ProgrammingLanguage)Array.IndexOf(ProgrammingLanguageValues.Values, q[1]));
+                    list = _context.Topics.Where(t => t.RelatedProgLanguages.StartsWith(n!));
+                }
+                else if (q[0] == "hashtag")
+                {
+                    list = _context.Topics.Where(t => t.HashTags.StartsWith(q[1]));
+                }
+                else
+                {
+                    list = _context.Topics.Where(t => t.Title.StartsWith(q[1]));
+                }
+            }
+
+            ViewData["query"] = query;
             ViewData["page"] = page == 0 ? 1 : page;
-            ViewData["filters"] = filters;
-            ViewData["proglang"] = proglang;
-            ViewData["tags"] = tags;
             ViewData["topicPerPage"] = singlePageElementCount;
             ViewData["topicCount"] = await list.CountAsync();
 

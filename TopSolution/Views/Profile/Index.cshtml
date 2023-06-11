@@ -4,7 +4,7 @@
         <form asp-action="UploadProfilePicture" enctype="multipart/form-data">
             <div class="profilepicturecontainer">
                 <div class="profilepictureelement">
-                    @if (Model.ProfilePicture == null)
+                    @if (Model.ProfilePicturePath == null)
                     {
                         <svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16" style="padding: 5px;">
                             <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
@@ -12,7 +12,7 @@
                     }
                     else
                     {
-                        <img width="128" height="128" src="@Model.ProfilePictureBase64String" style="border-radius: 50%;" />
+                        <img width="128" height="128" src="/profilepictures/@Model.ProfilePicturePath" style="border-radius: 50%;" />
                     }
                 </div>
             @if ((bool)ViewData["isOwnProfile"]!)

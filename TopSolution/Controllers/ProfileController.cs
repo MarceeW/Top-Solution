@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using TopSolution.Data;
+using TopSolution.Data.Migrations;
 using TopSolution.Models;
 
 namespace TopSolution.Controllers
@@ -32,6 +34,12 @@ namespace TopSolution.Controllers
                 return View(await _userManager.FindByIdAsync(id));
             else return View(user);
         }
+        public async Task<IActionResult> List(string query)
+        {
+            if (query != null)
+                return View(await _userManager.Users.Where(u => u.DisplayName.StartsWith(query)).ToListAsync());
+            return View(await _userManager.Users.ToListAsync());
+        }
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> UploadProfilePicture([FromForm]IFormFile profilePicture)
@@ -42,7 +50,14 @@ namespace TopSolution.Controllers
                 await stream.ReadAsync(buffer);
                 var user = await _userManager.GetUserAsync(User);
 
-                user!.ProfilePicture = buffer;
+                string filename = user!.Id + '.' + profilePicture.FileName.Split('.')[1];
+
+                if(user.ProfilePicturePath != null)
+                    System.IO.File.Delete(Path.Combine("wwwroot", "profilepictures", user.ProfilePicturePath));
+
+                System.IO.File.WriteAllBytes(Path.Combine("wwwroot", "profilepictures", filename), buffer);
+
+                user!.ProfilePicturePath = filename;
                 await _context.SaveChangesAsync();
             }
             return RedirectToAction(nameof(Index));

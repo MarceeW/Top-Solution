@@ -1,16 +1,25 @@
 ﻿var hashtagInput = document.getElementById("hashtagInput");
 var hashtagRawText = document.getElementById("hashtagRawText");
 var searchquery = document.getElementById("searchquery");
+var querysubmitbtn = document.getElementById("querysubmit");
 
 var topics = [];
 var hashtags = [];
 var proglangs = [];
+var profiles = [];
 
 var firstQuery = '';
+var queryTag = '';
 
+querysubmitbtn.onclick = event => {
+    if (queryTag != '' && queryTag != 'user:')
+        window.location.href = window.location.origin + '/Topics?query=' + queryTag + searchquery.value;
+    else if (queryTag == 'user:')
+        window.location.href = window.location.origin + '/Profile/List?query=' + searchquery.value.replace('user:','');
+};
 searchquery.addEventListener("focusin", event => {
     let searchqueryhelper = document.getElementById("searchqueryhelper");
-    searchqueryhelper.style.opacity = 100;
+    searchqueryhelper.style.display = 'flex';
 
     if (topics.length == 0 && hashtags.length == 0)
         getQueryData();
@@ -18,6 +27,8 @@ searchquery.addEventListener("focusin", event => {
 searchquery.onkeydown = event => {
     if (event.key == 'Tab')
         searchquery.value = firstQuery;
+    else if (event.key == 'Enter')
+        querysubmitbtn.click();
 };
 searchquery.addEventListener("input", event => {
     const inputText = searchquery.value.toLowerCase();
@@ -29,17 +40,25 @@ searchquery.addEventListener("input", event => {
 
     if (inputText.includes('hashtag:')) {
         const val = inputText.replace('hashtag:', '');
-        matches = hashtags.filter(h => h.toLowerCase().startsWith(val));
+        matches = hashtags.filter(h => h.toLowerCase().startsWith(val)).slice(0, 10);
+        queryTag = 'hashtag:';
     }
     else if (inputText.includes('proglang:')) {
         const val = inputText.replace('proglang:', '');
-        matches = proglangs.filter(p => p.toLowerCase().startsWith(val));
+        matches = proglangs.filter(p => p.toLowerCase().startsWith(val)).slice(0, 10);
+        queryTag = 'proglang:';
+    }
+    else if (inputText.includes('user:')) {
+        const val = inputText.replace('user:', '');
+        matches = profiles.filter(p => p.displayName.toLowerCase().startsWith(val)).slice(0, 10);
+        queryTag = 'user:';
     }
     else {
         let val = inputText;
         if (inputText.includes('title:'))
             val = inputText.replace('title:', '');
-        matches = topics.filter(t => t.toLowerCase().startsWith(val));
+        matches = topics.filter(t => t.toLowerCase().startsWith(val)).slice(0,10);
+        queryTag = 'title:';
     }
     let i = 0;
     matches.forEach(m => {
@@ -51,18 +70,30 @@ searchquery.addEventListener("input", event => {
         li.classList.add('list-group-item');
         li.classList.add('list-group-item-action');
         li.classList.add('searchquery-item');
-        li.textContent = m;
-
-        li.onclick = () => {
-            searchquery.value = m;
-        };
+        if (queryTag == 'user:') {
+            li.textContent = m.displayName;
+            li.onclick = () => {
+                window.location.href = window.location.origin + '/Profile/Index/'+ m.id;
+            };
+        }
+        else {
+            li.onclick = () => {
+                searchquery.value = m;
+                querysubmitbtn.click();
+            };
+            li.textContent = m;
+        }
+        
         autocompleteList.appendChild(li);
         i++;
     });
 });
 searchquery.addEventListener("focusout", event => {
     let searchqueryhelper = document.getElementById("searchqueryhelper");
-    searchqueryhelper.style.opacity = 0;
+
+    setTimeout(() => {
+        searchqueryhelper.style.display = 'none';
+    },200);
 });
 
 if (hashtagInput != null) {
@@ -108,7 +139,6 @@ if (profUploader != null) {
 
 async function getQueryData() {
     const tResponse = await fetch(window.location.origin + '/TopicRepository');
-
     if (tResponse.ok) {
         let data = await tResponse.json();
 
@@ -120,7 +150,7 @@ async function getQueryData() {
         console.log("Can't fetch topics!");
     }
 
-    const hResponse = await fetch(window.location.origin + '/HashtagRepository');
+    const hResponse = await fetch(window.location.origin + '/api/HashtagRepository');
     if (hResponse.ok) {
         hashtags = await hResponse.json();
     }
@@ -128,12 +158,20 @@ async function getQueryData() {
         console.log("Can't fetch hashtags!");
     }
 
-    const pResponse = await fetch(window.location.origin + '/ProgLangRepository');
+    const profResponse = await fetch(window.location.origin + '/api/ProfileRepository');
+    if (profResponse.ok) {
+        profiles = await profResponse.json();
+    }
+    else {
+        console.log("Can't fetch profiles!");
+    }
+
+    const pResponse = await fetch(window.location.origin + '/api/ProgLangRepository');
     if (pResponse.ok) {
         proglangs = await pResponse.json();
     }
     else {
-        console.log("Can't fetch hashtags!");
+        console.log("Can't fetch proglangs!");
     }
 }
 function removeHashtag(btn,textToRemove,inputIdToRemove) {

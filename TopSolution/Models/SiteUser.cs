@@ -8,8 +8,6 @@ namespace TopSolution.Models
 {
     public class SiteUser : IdentityUser
     {
-        [Key]
-        public string Id { get; set; }
         [Required]
         [Display(Name = "First Name")]
         public string FirstName { get;set; }
@@ -26,12 +24,10 @@ namespace TopSolution.Models
         public virtual ICollection<Topic> Topics { get; set; }
         public virtual ICollection<SiteUser> FollowedUsers { get; set; }
         public virtual ICollection<Comment> Comments { get; set; }
-        public virtual byte[] ProfilePicture { get; set; }
+        public virtual string ProfilePicturePath { get; set; }
         public virtual string PreferredLanguages { get; set; }
         [NotMapped]
         public string FullName { get => FirstName + " " + LastName; }
-        [NotMapped]
-        public string ProfilePictureBase64String => "data:image/jpg;base64," + Convert.ToBase64String(ProfilePicture);
         public SiteUser()
         {
             Id = Guid.NewGuid().ToString();

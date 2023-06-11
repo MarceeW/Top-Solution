@@ -9,7 +9,7 @@
     <a type="button" class="btn btn-dark m-3" asp-action="Create">Create new</a>
 </div>
 <div class="pb-3">
-    @{  int index = 0;
+    @{
         foreach (var item in Model)
         {
             var progLangs = item.RelatedProgLanguages.Split(';').ToList();
@@ -19,10 +19,7 @@
 
             @(await Html.PartialAsync("_TopicListElementPartial",
                 item,
-                new ViewDataDictionary(ViewData)
-                {
-                { "index", index }
-                }))
+                new ViewDataDictionary(ViewData)))
         }
     }
 </div>
@@ -37,7 +34,7 @@
         <nav class="nav nav-pills nav-justified">
             @for (int i = start; i < end; i++)
             {
-                <a class="nav-link@(currPage == i ? " active disabled" : "")" href="/Topics?page=@i&filters=@ViewData["filters"]&tags=@ViewData["tags"]&proglang=@ViewData["proglang"]">@i</a>
+                <a class="nav-link@(currPage == i ? " active disabled" : "")" href="/Topics?query=@ViewData["query"]&page=@i">@i</a>
             }
         </nav>
     }

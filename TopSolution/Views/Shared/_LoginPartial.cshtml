@@ -9,7 +9,7 @@
 
     <li class="nav-item">
             <a class="nav-link text-dark" asp-controller="Profile" asp-action="Index">
-                @if(_user!.ProfilePicture == null)
+                @if(_user!.ProfilePicturePath == null)
                 {
                     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16" style="padding: 5px;">
                         <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
@@ -17,7 +17,7 @@
                 }
                 else
                 {
-                    <img class="rounded-circle" width="32" height="32" src="@_user.ProfilePictureBase64String">
+                    <img class="rounded-circle" width="32" height="32" src="/profilepictures/@_user!.ProfilePicturePath">
                 }
             </a>
     </li>
